@@ -41,7 +41,10 @@
             width: 100vw;
             height: calc(100vh - 100px);
             overflow: hidden; display: none;
-            background: url('wallpaper.png') center center / cover repeat;
+            background-image: url('asset1.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: repeat;
         }
         .window {
             background: #444; border: 1px solid #666;
@@ -97,8 +100,7 @@
             if (app === 'notepad') {
                 content = '<textarea placeholder="Start typing..."></textarea>';
             } else if (app === 'calculator') {
-                const btns = '123+456-789*0C='.split('').map(c =>
-                    `<button onclick="calcButton('${c}')">${c}</button>`).join('');
+                const btns = '123+456-789*0C='.split('').map(c => `<button onclick="calcButton('${c}')">${c}</button>`).join('');
                 content = `<input id="calc-display" readonly /><div>${btns}</div>`;
             } else if (app === 'browser') {
                 content = '<input type="text" placeholder="https://example.com" onkeydown="if(event.key===\'Enter\') loadIframe(this)">'
