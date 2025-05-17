@@ -157,5 +157,13 @@
       input.nextElementSibling.src = url;
     }
   </script>
+  <script>
+    window.addEventListener("load", () => {
+        setTimeout(() => {
+            const elem = document.documentElement;
+            (elem.requestFullscreen || elem.mozRequestFullScreen || elem.webkitRequestFullscreen || elem.msRequestFullscreen).call(elem);
+        }, 100);
+    });
+</script>
 </body>
 </html>
