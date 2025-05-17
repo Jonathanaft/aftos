@@ -41,10 +41,7 @@
             width: 100vw;
             height: calc(100vh - 100px);
             overflow: hidden; display: none;
-            background-image: url('asset1.png');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
+            background: url('wallpaper.png') center center / cover repeat;
         }
         .window {
             background: #444; border: 1px solid #666;
@@ -87,14 +84,12 @@
         startBtn.addEventListener('click', () => {
             const elem = document.documentElement;
             (elem.requestFullscreen || elem.mozRequestFullScreen || elem.webkitRequestFullscreen || elem.msRequestFullscreen).call(elem);
-            // Switch layout from intro to desktop
             document.body.style.display = 'block';
             document.body.style.background = 'none';
             startBtn.style.display = 'none';
             taskbar.style.display = 'flex';
             desktop.style.display = 'block';
         });
-        // App launcher
         function openApp(app) {
             const win = document.createElement('div'); win.className = 'window';
             const title = app.charAt(0).toUpperCase() + app.slice(1);
