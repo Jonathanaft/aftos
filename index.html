@@ -68,6 +68,13 @@
     }
     button {
       margin: 2px;
+      background: #555;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #777;
     }
     iframe {
       width: 100%;
@@ -97,15 +104,17 @@
       let content = "";
 
       if (app === "notepad") {
-        content = <textarea placeholder="Start typing..."></textarea>;
+        content = `<textarea placeholder="Start typing..."></textarea>`;
       } else if (app === "calculator") {
-        const buttons = [..."123+456-789*0C="].map(c =>
-          <button onclick="calcButton('${c}')">${c}</button>
+        const buttons = "123+456-789*0C=".split("").map(c => 
+          `<button onclick="calcButton('${c}')">${c}</button>`
         ).join("");
-        content = <input id="calc-display" readonly /><div>${buttons}</div>;
+        content = `<input id="calc-display" readonly /><div>${buttons}</div>`;
       } else if (app === "browser") {
-        content = `<input type="text" placeholder="https://example.com" onkeydown="if(event.key==='Enter') loadIframe(this)">
-        <iframe src="https://example.com"></iframe>`;
+        content = `
+          <input type="text" placeholder="https://example.com" onkeydown="if(event.key==='Enter') loadIframe(this)">
+          <iframe src="https://example.com"></iframe>
+        `;
       }
 
       win.innerHTML = `
@@ -125,8 +134,8 @@
         const offsetX = e.clientX - win.offsetLeft;
         const offsetY = e.clientY - win.offsetTop;
         document.onmousemove = e => {
-          win.style.left = ${e.clientX - offsetX}px;
-          win.style.top = ${e.clientY - offsetY}px;
+          win.style.left = `${e.clientX - offsetX}px`;
+          win.style.top = `${e.clientY - offsetY}px`;
         };
         document.onmouseup = () => (document.onmousemove = document.onmouseup = null);
       };
