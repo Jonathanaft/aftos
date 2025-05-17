@@ -15,7 +15,6 @@
             justify-content: center;
             align-items: center;
         }
-
         #start-button {
             background-color: #555;
             color: #fff;
@@ -27,177 +26,110 @@
             transition: background-color 0.3s;
             z-index: 1000;
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            top: 50%; left: 50%; transform: translate(-50%, -50%);
         }
-
-        #start-button:hover {
-            background-color: #777;
-        }
-
+        #start-button:hover { background-color: #777; }
         #taskbar {
             background-color: #333;
             padding: 10px;
             position: fixed;
-            bottom: 0;
-            width: 100%;
-            display: flex;
-            gap: 10px;
-            z-index: 1000;
-            display: none;
+            bottom: 0; width: 100%; display: flex; gap: 10px;
+            z-index: 1000; display: none;
         }
-
         #desktop {
-            height: calc(100vh - 60px);
             position: relative;
-            overflow: hidden;
-            display: none;
+            width: 100vw; height: calc(100vh - 60px);
+            overflow: hidden; display: none;
+            background: url('wallpaper.png') center/cover no-repeat;
         }
-
         .window {
-            background: #444;
-            border: 1px solid #666;
-            position: absolute;
-            width: 400px;
-            height: 300px;
-            top: 50px;
-            left: 50px;
-            display: flex;
-            flex-direction: column;
-            resize: both;
-            overflow: hidden;
-            z-index: 10;
+            background: #444; border: 1px solid #666;
+            position: absolute; width: 400px; height: 300px;
+            top: 50px; left: 50px;
+            display: flex; flex-direction: column;
+            resize: both; overflow: hidden; z-index: 10;
         }
-
         .window-header {
-            background: #222;
-            padding: 5px;
-            cursor: move;
-            display: flex;
-            justify-content: space-between;
-            color: #fff;
+            background: #222; padding: 5px;
+            cursor: move; display: flex;
+            justify-content: space-between; color: #fff;
         }
-
-        .window-body {
-            flex: 1;
-            background: #111;
-            padding: 10px;
-            overflow: auto;
-        }
-
+        .window-body { flex: 1; background: #111;
+            padding: 10px; overflow: auto; }
         textarea, input[type="text"] {
-            width: 100%;
-            background: #222;
-            color: white;
-            border: none;
-            box-sizing: border-box;
+            width: 100%; background: #222;
+            color: white; border: none; box-sizing: border-box;
         }
-
-        input[type="text"] {
-            font-size: 18px;
-            margin-bottom: 5px;
-        }
-
-        button {
-            margin: 2px;
-            background: #555;
-            color: #fff;
-            border: none;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background: #777;
-        }
-
-        iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
+        input[type="text"] { font-size: 18px; margin-bottom: 5px; }
+        button.app-btn {
+            margin: 2px; background: #555; color: #fff;
+            border: none; cursor: pointer; }
+        button.app-btn:hover { background: #777; }
+        iframe { width: 100%; height: 100%; border: none; }
     </style>
 </head>
 <body>
     <button id="start-button">I aren't a robot.</button>
     <div id="taskbar">
-        <button id="notepadBtn">📝 Notepad</button>
-        <button id="calculatorBtn">🧮 Calculator</button>
-        <button id="browserBtn">🌐 Browser</button>
+        <button class="app-btn" id="notepadBtn">📝 Notepad</button>
+        <button class="app-btn" id="calculatorBtn">🧮 Calculator</button>
+        <button class="app-btn" id="browserBtn">🌐 Browser</button>
     </div>
     <div id="desktop"></div>
-
     <script>
-        document.getElementById("start-button").addEventListener("click", () => {
+        const startBtn = document.getElementById('start-button');
+        const taskbar = document.getElementById('taskbar');
+        const desktop = document.getElementById('desktop');
+        startBtn.addEventListener('click', () => {
             const elem = document.documentElement;
             (elem.requestFullscreen || elem.mozRequestFullScreen || elem.webkitRequestFullscreen || elem.msRequestFullscreen).call(elem);
-            document.getElementById("start-button").style.display = "none";
-            document.getElementById("taskbar").style.display = "flex";
-            document.getElementById("desktop").style.display = "block";
+            // Switch layout from intro to desktop
+            document.body.style.display = 'block';
+            document.body.style.background = 'none';
+            startBtn.style.display = 'none';
+            taskbar.style.display = 'flex';
+            desktop.style.display = 'block';
         });
-
-        // Add event listeners for buttons after the DOM content has loaded
-        document.getElementById("notepadBtn").addEventListener("click", () => openApp("notepad"));
-        document.getElementById("calculatorBtn").addEventListener("click", () => openApp("calculator"));
-        document.getElementById("browserBtn").addEventListener("click", () => openApp("browser"));
-
+        // App launcher
         function openApp(app) {
-            const win = document.createElement("div");
-            win.className = "window";
-            const title = app[0].toUpperCase() + app.slice(1);
-            let content = "";
-
-            if (app === "notepad") {
-                content = `<textarea placeholder="Start typing..."></textarea>`;
-            } else if (app === "calculator") {
-                const buttons = "123+456-789*0C=".split("").map(c => 
-                    `<button onclick="calcButton('${c}')">${c}</button>`
-                ).join("");
-                content = `<input id="calc-display" readonly /><div>${buttons}</div>`;
-            } else if (app === "browser") {
-                content = `
-                    <input type="text" placeholder="https://example.com" onkeydown="if(event.key==='Enter') loadIframe(this)">
-                    <iframe src="https://example.com"></iframe>
-                `;
+            const win = document.createElement('div'); win.className = 'window';
+            const title = app.charAt(0).toUpperCase() + app.slice(1);
+            let content = '';
+            if (app === 'notepad') {
+                content = '<textarea placeholder="Start typing..."></textarea>';
+            } else if (app === 'calculator') {
+                const btns = '123+456-789*0C='.split('').map(c =>
+                    `<button onclick="calcButton('${c}')">${c}</button>`).join('');
+                content = `<input id="calc-display" readonly /><div>${btns}</div>`;
+            } else if (app === 'browser') {
+                content = '<input type="text" placeholder="https://example.com" onkeydown="if(event.key===\'Enter\') loadIframe(this)">'
+                    + '<iframe src="https://example.com"></iframe>';
             }
-
-            win.innerHTML = `
-                <div class="window-header">
-                    <span>${title}</span>
-                    <button onclick="this.closest('.window').remove()">✖</button>
-                </div>
-                <div class="window-body">${content}</div>
-            `;
-            document.getElementById("desktop").appendChild(win);
-            makeDraggable(win);
+            win.innerHTML = `<div class="window-header"><span>${title}</span>`
+                + '<button onclick="this.closest(\'.window\').remove()">✖</button></div>'
+                + `<div class="window-body">${content}</div>`;
+            desktop.appendChild(win); makeDraggable(win);
         }
-
+        document.getElementById('notepadBtn').onclick = () => openApp('notepad');
+        document.getElementById('calculatorBtn').onclick = () => openApp('calculator');
+        document.getElementById('browserBtn').onclick = () => openApp('browser');
         function makeDraggable(win) {
-            const header = win.querySelector(".window-header");
-            header.onmousedown = e => {
-                const offsetX = e.clientX - win.offsetLeft;
-                const offsetY = e.clientY - win.offsetTop;
-                document.onmousemove = e => {
-                    win.style.left = `${e.clientX - offsetX}px`;
-                    win.style.top = `${e.clientY - offsetY}px`;
-                };
-                document.onmouseup = () => (document.onmousemove = document.onmouseup = null);
+            const hdr = win.querySelector('.window-header');
+            hdr.onmousedown = e => {
+                const offX = e.clientX - win.offsetLeft;
+                const offY = e.clientY - win.offsetTop;
+                document.onmousemove = m => { win.style.left = m.clientX - offX + 'px'; win.style.top = m.clientY - offY + 'px'; };
+                document.onmouseup = () => { document.onmousemove = null; document.onmouseup = null; };
             };
         }
-
         function calcButton(c) {
-            const d = document.getElementById("calc-display");
-            if (!d) return;
-            if (c === "C") d.value = "";
-            else if (c === "=") {
-                try { d.value = eval(d.value); }
-                catch { d.value = "Error"; }
-            } else d.value += c;
+            const d = document.getElementById('calc-display'); if (!d) return;
+            if (c === 'C') d.value = '';
+            else if (c === '=') { try { d.value = eval(d.value);} catch { d.value = 'Error'; } }
+            else d.value += c;
         }
-
         function loadIframe(input) {
-            let url = input.value.trim();
-            if (!url.startsWith("http")) url = "https://" + url;
+            let url = input.value.trim(); if (!url.startsWith('http')) url = 'https://' + url;
             input.nextElementSibling.src = url;
         }
     </script>
