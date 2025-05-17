@@ -41,10 +41,10 @@
             width: 100vw;
             height: calc(100vh - 100px);
             overflow: hidden; display: none;
-            background-image: url('asset1.png');
+            background-image: url('background.png');
             background-size: cover;
             background-position: center;
-            background-repeat: repeat;
+            background-repeat: no-repeat;
         }
         .window {
             background: #444; border: 1px solid #666;
@@ -87,12 +87,14 @@
         startBtn.addEventListener('click', () => {
             const elem = document.documentElement;
             (elem.requestFullscreen || elem.mozRequestFullScreen || elem.webkitRequestFullscreen || elem.msRequestFullscreen).call(elem);
+            // Switch layout from intro to desktop
             document.body.style.display = 'block';
             document.body.style.background = 'none';
             startBtn.style.display = 'none';
             taskbar.style.display = 'flex';
             desktop.style.display = 'block';
         });
+        // App launcher
         function openApp(app) {
             const win = document.createElement('div'); win.className = 'window';
             const title = app.charAt(0).toUpperCase() + app.slice(1);
@@ -100,7 +102,8 @@
             if (app === 'notepad') {
                 content = '<textarea placeholder="Start typing..."></textarea>';
             } else if (app === 'calculator') {
-                const btns = '123+456-789*0C='.split('').map(c => `<button onclick="calcButton('${c}')">${c}</button>`).join('');
+                const btns = '123+456-789*0C='.split('').map(c =>
+                    `<button onclick="calcButton('${c}')">${c}</button>`).join('');
                 content = `<input id="calc-display" readonly /><div>${btns}</div>`;
             } else if (app === 'browser') {
                 content = '<input type="text" placeholder="https://example.com" onkeydown="if(event.key===\'Enter\') loadIframe(this)">'
