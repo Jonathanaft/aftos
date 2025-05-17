@@ -68,7 +68,6 @@
     <button id="guestBtn">Guest</button>
 
     <script>
-        // Simulate loading
         const progressFill = document.getElementById("progress-fill");
         const loadingScreen = document.getElementById("loading-screen");
         const guestBtn = document.getElementById("guestBtn");
@@ -88,7 +87,6 @@
             progressFill.style.width = `${progress}%`;
         }, 200);
 
-        // Fullscreen and AftOS loading
         guestBtn.addEventListener("click", () => {
             const elem = document.documentElement;
             if (elem.requestFullscreen) {
@@ -101,7 +99,6 @@
                 elem.msRequestFullscreen();
             }
 
-            // Replace this page content with your AftOS
             document.body.innerHTML = `
                 <div id="taskbar">
                     <button id="notepadBtn">📝 Notepad</button>
@@ -113,7 +110,6 @@
 
             const desktop = document.getElementById("desktop");
 
-            // Add event listeners for the taskbar buttons
             document.getElementById("notepadBtn").addEventListener("click", () => openApp("notepad"));
             document.getElementById("calculatorBtn").addEventListener("click", () => openApp("calculator"));
             document.getElementById("browserBtn").addEventListener("click", () => openApp("browser"));
