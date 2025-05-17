@@ -2,178 +2,168 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <title>AftOS Launcher</title>
+    <title>AftOS</title>
     <style>
         body {
-            background-color: black;
-            color: white;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
             margin: 0;
             overflow: hidden;
             font-family: sans-serif;
         }
 
-        #loading-screen {
-            text-align: center;
-            opacity: 1;
-            transition: opacity 1s;
+        #taskbar {
+            background-color: #333;
+            padding: 10px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
         }
 
-        #progress-bar {
-            width: 300px;
-            height: 20px;
-            background-color: #333;
-            border-radius: 10px;
-            margin-top: 20px;
+        #desktop {
+            background: url('wallpaper.png') center center / cover no-repeat;
+            height: calc(100vh - 60px);
+            position: relative;
             overflow: hidden;
         }
 
-        #progress-fill {
-            width: 0;
-            height: 100%;
-            background-color: #00cc66;
-            border-radius: 10px;
-            transition: width 0.3s;
+        .window {
+            background: #444;
+            border: 1px solid #666;
+            position: absolute;
+            width: 400px;
+            height: 300px;
+            top: 50px;
+            left: 50px;
+            display: flex;
+            flex-direction: column;
+            resize: both;
+            overflow: hidden;
+            z-index: 10;
         }
 
-        #guestBtn {
-            background-color: black;
+        .window-header {
+            background: #222;
+            padding: 5px;
+            cursor: move;
+            display: flex;
+            justify-content: space-between;
+            color: #fff;
+        }
+
+        .window-body {
+            flex: 1;
+            background: #111;
+            padding: 10px;
+            overflow: auto;
+        }
+
+        textarea, input[type="text"] {
+            width: 100%;
+            background: #222;
             color: white;
             border: none;
-            font-size: 24px;
-            padding: 20px 40px;
-            cursor: pointer;
-            margin-top: 40px;
-            transition: background 0.3s;
-            display: none;
+            box-sizing: border-box;
         }
 
-        #guestBtn:hover {
-            background-color: #333;
+        input[type="text"] {
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+
+        button {
+            margin: 2px;
+            background: #555;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #777;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
         }
     </style>
 </head>
 <body>
-    <div id="loading-screen">
-        <h1>Loading AftOS...</h1>
-        <div id="progress-bar">
-            <div id="progress-fill"></div>
-        </div>
+    <div id="taskbar">
+        <button id="notepadBtn">📝 Notepad</button>
+        <button id="calculatorBtn">🧮 Calculator</button>
+        <button id="browserBtn">🌐 Browser</button>
     </div>
-
-    <button id="guestBtn">Guest</button>
+    <div id="desktop"></div>
 
     <script>
-        const progressFill = document.getElementById("progress-fill");
-        const loadingScreen = document.getElementById("loading-screen");
-        const guestBtn = document.getElementById("guestBtn");
+        // Add event listeners for buttons after the DOM content has loaded
+        document.getElementById("notepadBtn").addEventListener("click", () => openApp("notepad"));
+        document.getElementById("calculatorBtn").addEventListener("click", () => openApp("calculator"));
+        document.getElementById("browserBtn").addEventListener("click", () => openApp("browser"));
 
-        let progress = 0;
-        const loadingInterval = setInterval(() => {
-            progress += Math.random() * 10;
-            if (progress >= 100) {
-                progress = 100;
-                clearInterval(loadingInterval);
-                loadingScreen.style.opacity = 0;
-                setTimeout(() => {
-                    loadingScreen.style.display = "none";
-                    guestBtn.style.display = "block";
-                }, 1000);
-            }
-            progressFill.style.width = `${progress}%`;
-        }, 200);
+        function openApp(app) {
+            const win = document.createElement("div");
+            win.className = "window";
+            const title = app[0].toUpperCase() + app.slice(1);
+            let content = "";
 
-        guestBtn.addEventListener("click", () => {
-            const elem = document.documentElement;
-            if (elem.requestFullscreen) {
-                elem.requestFullscreen();
-            } else if (elem.mozRequestFullScreen) {
-                elem.mozRequestFullScreen();
-            } else if (elem.webkitRequestFullscreen) {
-                elem.webkitRequestFullscreen();
-            } else if (elem.msRequestFullscreen) {
-                elem.msRequestFullscreen();
-            }
-
-            document.body.innerHTML = `
-                <div id="taskbar">
-                    <button id="notepadBtn">📝 Notepad</button>
-                    <button id="calculatorBtn">🧮 Calculator</button>
-                    <button id="browserBtn">🌐 Browser</button>
-                </div>
-                <div id="desktop"></div>
-            `;
-
-            const desktop = document.getElementById("desktop");
-
-            document.getElementById("notepadBtn").addEventListener("click", () => openApp("notepad"));
-            document.getElementById("calculatorBtn").addEventListener("click", () => openApp("calculator"));
-            document.getElementById("browserBtn").addEventListener("click", () => openApp("browser"));
-
-            function openApp(app) {
-                const win = document.createElement("div");
-                win.className = "window";
-                const title = app[0].toUpperCase() + app.slice(1);
-                let content = "";
-
-                if (app === "notepad") {
-                    content = `<textarea placeholder="Start typing..."></textarea>`;
-                } else if (app === "calculator") {
-                    const buttons = "123+456-789*0C=".split("").map(c => 
-                        `<button onclick="calcButton('${c}')">${c}</button>`
-                    ).join("");
-                    content = `<input id="calc-display" readonly /><div>${buttons}</div>`;
-                } else if (app === "browser") {
-                    content = `
-                        <input type="text" placeholder="https://example.com" onkeydown="if(event.key==='Enter') loadIframe(this)">
-                        <iframe src="https://example.com"></iframe>
-                    `;
-                }
-
-                win.innerHTML = `
-                    <div class="window-header">
-                        <span>${title}</span>
-                        <button onclick="this.closest('.window').remove()">✖</button>
-                    </div>
-                    <div class="window-body">${content}</div>
+            if (app === "notepad") {
+                content = `<textarea placeholder="Start typing..."></textarea>`;
+            } else if (app === "calculator") {
+                const buttons = "123+456-789*0C=".split("").map(c => 
+                    `<button onclick="calcButton('${c}')">${c}</button>`
+                ).join("");
+                content = `<input id="calc-display" readonly /><div>${buttons}</div>`;
+            } else if (app === "browser") {
+                content = `
+                    <input type="text" placeholder="https://example.com" onkeydown="if(event.key==='Enter') loadIframe(this)">
+                    <iframe src="https://example.com"></iframe>
                 `;
-                desktop.appendChild(win);
-                makeDraggable(win);
             }
 
-            function makeDraggable(win) {
-                const header = win.querySelector(".window-header");
-                header.onmousedown = e => {
-                    const offsetX = e.clientX - win.offsetLeft;
-                    const offsetY = e.clientY - win.offsetTop;
-                    document.onmousemove = e => {
-                        win.style.left = `${e.clientX - offsetX}px`;
-                        win.style.top = `${e.clientY - offsetY}px`;
-                    };
-                    document.onmouseup = () => (document.onmousemove = document.onmouseup = null);
+            win.innerHTML = `
+                <div class="window-header">
+                    <span>${title}</span>
+                    <button onclick="this.closest('.window').remove()">✖</button>
+                </div>
+                <div class="window-body">${content}</div>
+            `;
+            document.getElementById("desktop").appendChild(win);
+            makeDraggable(win);
+        }
+
+        function makeDraggable(win) {
+            const header = win.querySelector(".window-header");
+            header.onmousedown = e => {
+                const offsetX = e.clientX - win.offsetLeft;
+                const offsetY = e.clientY - win.offsetTop;
+                document.onmousemove = e => {
+                    win.style.left = `${e.clientX - offsetX}px`;
+                    win.style.top = `${e.clientY - offsetY}px`;
                 };
-            }
+                document.onmouseup = () => (document.onmousemove = document.onmouseup = null);
+            };
+        }
 
-            function calcButton(c) {
-                const d = document.getElementById("calc-display");
-                if (!d) return;
-                if (c === "C") d.value = "";
-                else if (c === "=") {
-                    try { d.value = eval(d.value); }
-                    catch { d.value = "Error"; }
-                } else d.value += c;
-            }
+        function calcButton(c) {
+            const d = document.getElementById("calc-display");
+            if (!d) return;
+            if (c === "C") d.value = "";
+            else if (c === "=") {
+                try { d.value = eval(d.value); }
+                catch { d.value = "Error"; }
+            } else d.value += c;
+        }
 
-            function loadIframe(input) {
-                let url = input.value.trim();
-                if (!url.startsWith("http")) url = "https://" + url;
-                input.nextElementSibling.src = url;
-            }
-        });
+        function loadIframe(input) {
+            let url = input.value.trim();
+            if (!url.startsWith("http")) url = "https://" + url;
+            input.nextElementSibling.src = url;
+        }
     </script>
 </body>
 </html>
