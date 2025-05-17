@@ -37,11 +37,18 @@
             z-index: 1000; display: none;
         }
         #desktop {
-            position: relative;
-            width: 100vw; height: calc(100vh - 60px);
-            overflow: hidden; display: none;
-            background: url('wallpaper.png') center/cover no-repeat;
-        }
+#desktop {
+    position: relative;
+    width: 100vw;
+    height: calc(100vh - 60px);
+    overflow: hidden;
+    display: none;
+    background-image: url('wallpaper.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
         .window {
             background: #444; border: 1px solid #666;
             position: absolute; width: 400px; height: 300px;
