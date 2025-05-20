@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AftOS Redirect</title>
+  <script>
+    // Redirect to online version if connected
+    if (navigator.onLine) {
+      window.location.href = "https://jonathanaft.github.io/aftos/os";
+    }
+
+    // Register service worker
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('service-worker.js')
+          .then(reg => console.log('Service Worker registered:', reg.scope))
+          .catch(err => console.error('Service Worker registration failed:', err));
+      });
+    }
+  </script>
+</head>
+<body>
+  <h1>You are offline. Loading offline version...</h1>
+  <iframe src="os.html" style="width:100vw; height:100vh; border:none;"></iframe>
+</body>
+</html>
