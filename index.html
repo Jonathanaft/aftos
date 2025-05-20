@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8" />
     <title>AftOS</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <style>
         body {
             margin: 0;
@@ -81,9 +80,7 @@
         <button class="app-btn" id="browserBtn">🌐 Browser</button>
     </div>
     <div id="desktop"></div>
-    <div id="os-html-container"></div>
     <script>
-        // === AftOS Desktop logic ===
         const startBtn = document.getElementById('start-button');
         const taskbar = document.getElementById('taskbar');
         const desktop = document.getElementById('desktop');
@@ -138,46 +135,6 @@
         function loadIframe(input) {
             let url = input.value.trim(); if (!url.startsWith('http')) url = 'https://' + url;
             input.nextElementSibling.src = url;
-        }
-
-        // === Offline caching for os.html ===
-        async function loadOSHtml() {
-            const container = document.getElementById('os-html-container');
-            if (navigator.onLine) {
-                try {
-                    const resp = await fetch('os.html');
-                    if (!resp.ok) throw new Error('Network response was not ok');
-                    const code = await resp.text();
-                    localStorage.setItem('offline', code);
-                    container.innerHTML = code;
-                } catch (e) {
-                    const cached = localStorage.getItem('offline');
-                    if (cached) {
-                        container.innerHTML = cached;
-                    } else {
-                        container.innerHTML = "<h2>Unable to load OS. No offline cache available.</h2>";
-                    }
-                }
-            } else {
-                const cached = localStorage.getItem('offline');
-                if (cached) {
-                    container.innerHTML = cached;
-                } else {
-                    container.innerHTML = "<h2>You are offline and no offline cache is available.</h2>";
-                }
-            }
-        }
-        window.addEventListener('DOMContentLoaded', loadOSHtml);
-        window.addEventListener('online', loadOSHtml);
-        window.addEventListener('offline', loadOSHtml);
-
-        // Register service worker (optional)
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('service-worker.js')
-                    .then(reg => console.log('Service Worker registered:', reg.scope))
-                    .catch(err => console.error('Service Worker registration failed:', err));
-            });
         }
     </script>
 </body>
